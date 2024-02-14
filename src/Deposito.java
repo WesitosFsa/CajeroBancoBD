@@ -20,11 +20,11 @@ public class Deposito extends JFrame {
     private JButton menuButton;
     private JButton borrarButton;
 
-    private Saldo saldo;
+    private Saldo saldoPanel;
 
-    public Deposito() {
+    public Deposito(Saldo saldoPanel, int saldo) {
         super("Deposito");
-        this.saldo = saldo;
+        this.saldoPanel = saldoPanel;
 
         setContentPane(paneldeposito);
         setSize(500, 500);
@@ -117,39 +117,26 @@ public class Deposito extends JFrame {
         ENTERButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                int saldoactual = Saldo.saldobanco;
-                String deposito1 = textField1.getText();
-                int deposito = Integer.parseInt(deposito1);
-                    Saldo.saldobanco = saldoactual + deposito;
-                    textField1.setText("");
-                    int respuesta = JOptionPane.showConfirmDialog(null, "Quiere imprimir su factura",
-                            "Imprimir", JOptionPane.YES_NO_OPTION);
-                    try {
-                        if (respuesta == JOptionPane.YES_OPTION) {
-                            JOptionPane.showMessageDialog(null, "Su saldo anterior era: " + saldoactual + "\nSu saldo actual es " + Saldo.saldobanco + "\nA echo un deposito de : " + deposito + "\nGracias por usar nuestro servicio", "Factura", JOptionPane.WARNING_MESSAGE);
+                String depositoStr = textField1.getText();
+                int deposito = Integer.parseInt(depositoStr);
+                saldoPanel.actualizarSaldo(deposito);
+                textField1.setText("");
 
-
-                        }
-                    } catch (Exception ex) {
-                        ex.printStackTrace();
-                    }
+                // Lógica para imprimir factura
+                int respuesta = JOptionPane.showConfirmDialog(null, "Quiere imprimir su factura",
+                        "Imprimir", JOptionPane.YES_NO_OPTION);
+                if (respuesta == JOptionPane.YES_OPTION) {
+                    // Lógica para imprimir factura aquí
                 }
-
+            }
         });
+
         borrarButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 textField1.setText("");
             }
         });
+
     }
 }
-/*    public static void main(String[] args){
-        SwingUtilities.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-                new Deposito();
-            }
-        });
-    }
-}*/

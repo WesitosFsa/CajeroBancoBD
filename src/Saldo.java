@@ -1,24 +1,22 @@
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
-
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 
 public class Saldo extends JFrame {
-    private JPanel panel1;
+
     private JPanel panelsaldo;
-    private JTextField saldotexto;
     private JButton menuButton;
-    private JLabel Saldo;
     private JLabel lblsaldo;
-    public static int saldobanco = 200;
+    private int idUsuario = 1;
+    private int saldobanco;
 
-
-
-
-    public Saldo() {
+    public Saldo(int saldobanco) {
         super("Saldo");
-        setContentPane(panelsaldo);
+        this.saldobanco = saldobanco;
         setSize(500, 500);
         setResizable(false);
         setLocationRelativeTo(null);
@@ -26,7 +24,7 @@ public class Saldo extends JFrame {
         setVisible(true);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
 
-        lbltext();
+        mostrarSaldo();
 
         menuButton.addActionListener(new ActionListener() {
             @Override
@@ -39,18 +37,36 @@ public class Saldo extends JFrame {
         });
 
     }
-    private void lbltext(){
-        String saldo = String.valueOf(saldobanco);
-        lblsaldo.setText(saldo);
+
+    private void mostrarSaldo() {
+        try {
+            Connection conexion = DriverManager.getConnection("jdbc:mysql://localhost:3306/Banco", "root", "123456mm");
+            String query = "SELECT saldo FROM Saldos WHERE idUsuario = ?";
+            PreparedStatement preparedStatement = conexion.prepareStatement(query);
+            preparedStatement.setInt(1, idUsuario);
+
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            if (resultSet.next()) {
+                int saldo = resultSet.getInt("saldo");
+                lblsaldo.setText(String.valueOf(saldo));
+            } else {
+                lblsaldo.setText("Saldo no encontrado");
+            }
+
+            resultSet.close();
+            preparedStatement.close();
+            conexion.close();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            JOptionPane.showMessageDialog(null, "Error en la conexión a la base de datos");
+        }
     }
 
-    public static void main(String[] args){
-        SwingUtilities.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-                new Saldo();
-            }
-        });
+    public void actualizarSaldo(int deposito) {
+        // Aquí actualizas el saldo según el depósito realizado
+        saldobanco += deposito;
+        // Actualizas el texto del JLabel con el nuevo saldo
+        lblsaldo.setText(String.valueOf(saldobanco));
     }
 }
-

@@ -22,7 +22,7 @@ public class Menu_Opciones extends JFrame {
         verSaldoRadioButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                Saldo saldousuario = new Saldo();
+                Saldo saldousuario = new Saldo(50);
                 saldousuario.setVisible(true);
                 dispose();
 
@@ -47,7 +47,7 @@ public class Menu_Opciones extends JFrame {
         depositoRadioButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                Deposito depositousuario = new Deposito();
+                Deposito depositousuario = new Deposito(Saldo.saldoPanel,45);
                 depositousuario.setVisible(true);
 
                 JFrame frame = (JFrame) SwingUtilities.getWindowAncestor(menu);
